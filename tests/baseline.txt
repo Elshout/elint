@@ -1,0 +1,27 @@
+funktion main[] /->
+     var ëxclämatïön_märk ist "!"ß
+     var nümmër ist 666ß
+     var ändër_nümmër ist 6.66ß
+
+     als[nümmër nicht gleich ändër_nümmër] /->
+         ändër_nümmër ist nümmërß
+     >-/ anders /->
+         ëxclämätïön_märk ist "?"ß
+     >-/
+
+     schreib["h"]ß
+     schreib["e"]ß
+     schreib["l"]ß
+     schreib["l"]ß
+     schreib["o"]ß
+     schreib[" "]ß
+     schreib["w"]ß
+     schreib["o"]ß
+     schreib["r"]ß
+     schreib["l"]ß
+     schreib["d"]ß
+     schreib[ëxclämätïön_märk]ß
+     schreib[nümmër + ändër_nümmër]ß
+>-/
+
+main[]ß
