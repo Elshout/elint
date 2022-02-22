@@ -104,10 +104,10 @@ def process_call(program: Program):
 
 def instr_load(program: Program):
     while not end_of_code(program):
-        instr_decode(program, False)
+        rule_dispatch(program, False)
 
 
-def instr_decode(program: Program, is_in_func_body: bool):
+def rule_dispatch(program: Program, is_in_func_body: bool):
     if increment_if(program, var):
         declr_var(program)
     elif increment_if(program, func):
@@ -119,7 +119,7 @@ def instr_decode(program: Program, is_in_func_body: bool):
         sync(program)
 
 
-def declr_func(program: Program, is_in_func_body: bool):
+def declr_func(program: Program, is_invalid: bool):
     if compare(program, qualifier):
         pass  # Fetch function name
     expl_increment_if(program, qualifier, 'Expected function name')
@@ -137,9 +137,10 @@ def declr_func(program: Program, is_in_func_body: bool):
 
     expl_increment_if(program, parenthesis_right, 'Expected ] to end function')
     expl_increment_if(program, brace_left, 'Expected /-> before function body')
-    block(program, True)
-    if is_in_func_body:
-        syntax_error('Cannot declare function inside another function', program.stream[program.current][1], program)
+    block(program)
+    if is_invalid:
+        syntax_error('Cannot declare function inside a block or another function',
+                     program.stream[program.current][1], program)
 
 
 def declr_var(program: Program):
@@ -157,7 +158,7 @@ def declr_var(program: Program):
 def stmt(program: Program, is_in_func: bool):
     if increment_if(program, brace_left):
         program.scope_depth += 1
-        block(program, is_in_func)
+        block(program)
         program.scope_depth -= 1
     elif increment_if(program, declr_if):
         cond_if(program, is_in_func)
@@ -207,9 +208,9 @@ def opr_and(program: Program):
         equality(program)
 
 
-def block(program: Program, is_func_body: bool):
+def block(program: Program):
     while not compare(program, brace_right) and not end_of_code(program):
-        instr_decode(program, is_func_body)
+        rule_dispatch(program, True)
 
     expl_increment_if(program, brace_right, 'Expected >-/ after block')
 

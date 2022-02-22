@@ -17,6 +17,6 @@ class InterpreterHost:
 @final
 @dataclass
 class InstrFrame:
-    instr_list: Final = []
-    instr: int = 0
+    table_loc = None
+    instr_offset: int = 0
     stack_base: int = 0

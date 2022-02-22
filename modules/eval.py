@@ -7,22 +7,31 @@ literal_str: int = common.literal_string
 literal_int: int = common.literal_int
 literal_dbl: int = common.literal_dbl
 qualifier: int = common.identifier_string
+declr_not: int = common.declaration_not
+symbol_minus: int = common.symbol_minus
 
 vm: runtime.InterpreterHost
 
 
 def opr_unary(opr: int) -> None:
-    pass
+    if opr == declr_not:
+        value = pop()
+        if type(value) == bool:
+            push(not value)
+        else:
+            pass
+    elif opr == symbol_minus:
+        pass
 
 
-def load_primary(*opr: int) -> None:
-    if opr[0] == literal_true:
+def load_primary(opr: int) -> None:
+    if opr == literal_true:
         push(True)
-    elif opr[0] == literal_false:
+    elif opr == literal_false:
         push(False)
-    elif opr[0] == literal_str or opr[0] == literal_int or opr[0] == literal_dbl:
-        push(opr[1])
-    elif opr[0] == qualifier:
+    elif opr == literal_str or opr == literal_int or opr == literal_dbl:
+        pass
+    elif opr == qualifier:
         # Variables
         pass
 
@@ -33,6 +42,10 @@ def push(value) -> None:
 
 def pop():
     return vm.stack.pop()
+
+
+def drop() -> None:
+    vm.stack.pop()
 
 
 def peek(offset: int = 0):
