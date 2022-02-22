@@ -40,7 +40,6 @@ res: Final = {
     'return': common.declaration_return
 }
 
-
 @final
 @dataclass
 class Source:
@@ -48,7 +47,6 @@ class Source:
     offset_begin: int = 0
     current_offset_abs: int = 0
     line: int = 1
-
 
 def load_from(code: str) -> Program:
     sources = Source()
@@ -61,7 +59,6 @@ def load_from(code: str) -> Program:
     program.stream.append((src_end, sources.line))
 
     return program
-
 
 def increment_through(sources: Source, program: Program) -> None:
     current = sources.code[sources.current_offset_abs]
@@ -124,17 +121,14 @@ def increment_through(sources: Source, program: Program) -> None:
     syntax_error('Invalid syntax', sources.line, program)
     # Error: Unidentified character
 
-
 def code_endpoint_reached(sources: Source) -> bool:
     return sources.current_offset_abs >= len(sources.code)
-
 
 def lookup(sources: Source, offset: int = 0) -> str:
     if code_endpoint_reached(sources):
         return '\0'
 
     return sources.code[sources.current_offset_abs + offset]
-
 
 def handle_num(sources: Source, program: Program) -> None:
     is_floating_point = False
@@ -156,7 +150,6 @@ def handle_num(sources: Source, program: Program) -> None:
         program.stream.append((literal_int, sources.line,
                                int(sources.code[sources.offset_begin:sources.current_offset_abs])))
 
-
 def identifier_handle(sources: Source, program: Program) -> None:
     while lookup(sources).isalnum() or lookup(sources) == '_':
         if lookup(sources) == 'ß' and not (lookup(sources, 1).isalnum() or lookup(sources, 1) == '_'):
@@ -170,7 +163,6 @@ def identifier_handle(sources: Source, program: Program) -> None:
         program.stream.append((res[string_s], sources.line))
     else:
         program.stream.append((identifier_string, sources.line, string_s))
-
 
 def str_handle(sources: Source, program: Program) -> None:
     while not (lookup(sources) == '"') and not code_endpoint_reached(sources):
@@ -194,7 +186,6 @@ def str_handle(sources: Source, program: Program) -> None:
         # to chars is the job of the lexer
 
     program.stream.append((literal_string, sources.line, val))
-
 
 # Report lexical errors but scramble the line they're on, in accordance with el spec
 def syntax_error(err: str, line: int, program: Program) -> None:

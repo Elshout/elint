@@ -38,21 +38,17 @@ qualifier = common.identifier_string
 brace_left = common.brace_left
 brace_right = common.brace_right
 
-
 def end_of_code(program: Program) -> bool:
     return opr_at(program) == src_end
 
-
 def opr_at(program: Program) -> int:
     return program.stream[program.current][0]
-
 
 def expl_increment_if(program: Program, id_expected: int, err: str) -> None:
     if not increment_if(program, id_expected):
         if not program.ignore_err:
             program.ignore_err = True
             syntax_error(err, program.stream[program.current][1], program)
-
 
 def sync(program: Program) -> None:
     program.ignore_err = False
@@ -72,7 +68,6 @@ def sync(program: Program) -> None:
 
         increment(program)
 
-
 def increment_if(program: Program, id_expected: int) -> bool:
     if compare(program, id_expected):
         increment(program)
@@ -80,18 +75,15 @@ def increment_if(program: Program, id_expected: int) -> bool:
 
     return False
 
-
 def increment(program: Program) -> None:
     if not end_of_code(program):
         program.current += 1
-
 
 def compare(program: Program, cmp: int) -> bool:
     if end_of_code(program):
         return False
 
     return opr_at(program) == cmp
-
 
 def process_call(program: Program):
     if not compare(program, parenthesis_right):
@@ -101,11 +93,9 @@ def process_call(program: Program):
 
     expl_increment_if(program, parenthesis_right, 'Expected ] after arguments')
 
-
 def instr_load(program: Program):
     while not end_of_code(program):
         rule_dispatch(program, False)
-
 
 def rule_dispatch(program: Program, is_in_func_body: bool):
     if increment_if(program, var):
@@ -117,7 +107,6 @@ def rule_dispatch(program: Program, is_in_func_body: bool):
 
     if program.ignore_err:
         sync(program)
-
 
 def declr_func(program: Program, is_invalid: bool):
     if compare(program, qualifier):
@@ -142,7 +131,6 @@ def declr_func(program: Program, is_invalid: bool):
         syntax_error('Cannot declare function inside a block or another function',
                      program.stream[program.current][1], program)
 
-
 def declr_var(program: Program):
     if compare(program, qualifier):
         pass  # Fetch var name
@@ -153,7 +141,6 @@ def declr_var(program: Program):
         expr(program)
 
     expl_increment_if(program, statement_end, 'Expected ß after variable')
-
 
 def stmt(program: Program, is_in_func: bool):
     if increment_if(program, brace_left):
@@ -169,14 +156,12 @@ def stmt(program: Program, is_in_func: bool):
 
     stmt_expr(program)
 
-
 def stmt_return(program: Program, is_in_func_body: bool):
     if not compare(program, statement_end):
         expr(program)  # Return value
     expl_increment_if(program, statement_end, 'Expected ß after return value')
     if not is_in_func_body:
         syntax_error('Cannot return outside a function', program.stream[program.current][1], program)
-
 
 def cond_if(program: Program, is_in_func: bool):
     expl_increment_if(program, parenthesis_left, 'Expected [ after als')
@@ -188,25 +173,21 @@ def cond_if(program: Program, is_in_func: bool):
     if increment_if(program, declr_else):
         stmt(program, is_in_func)  # Else branch, if any
 
-
 def cond_repeat_if(program: Program, is_in_func: bool):
     expl_increment_if(program, parenthesis_left, 'Expected [ after while')
     expr(program)
     expl_increment_if(program, parenthesis_right, 'Expected ] after condition')
     stmt(program, is_in_func)
 
-
 def opr_or(program: Program):
     opr_and(program)
     while increment_if(program, or_opr):
         opr_and(program)
 
-
 def opr_and(program: Program):
     equality(program)
     while increment_if(program, and_opr):
         equality(program)
-
 
 def block(program: Program):
     while not compare(program, brace_right) and not end_of_code(program):
@@ -214,15 +195,12 @@ def block(program: Program):
 
     expl_increment_if(program, brace_right, 'Expected >-/ after block')
 
-
 def stmt_expr(program: Program):
     expr(program)
     expl_increment_if(program, statement_end, 'Expected ß after expression statement')
 
-
 def expr(program: Program):
     assignment(program)
-
 
 def assignment(program: Program):
     opr_or(program)
@@ -232,7 +210,6 @@ def assignment(program: Program):
         # Check if the result from the call to equality is a qualifier that can be assigned to and assign
         # it to the value from the above call to assignment, otherwise error out
 
-
 def equality(program: Program):
     comparison(program)
 
@@ -241,7 +218,6 @@ def equality(program: Program):
             pass
             # Operation checks for inequality, by default checks for equality
         comparison(program)
-
 
 def comparison(program: Program):
     term(program)
@@ -261,7 +237,6 @@ def comparison(program: Program):
             pass
         term(program)
 
-
 def term(program: Program):
     factor(program)
 
@@ -274,7 +249,6 @@ def term(program: Program):
             pass
             # Subtraction
         factor(program)
-
 
 def factor(program: Program):
     unary(program)
@@ -289,7 +263,6 @@ def factor(program: Program):
             # Division
         unary(program)
 
-
 def unary(program: Program):
     if increment_if(program, declr_not) or increment_if(program, symbol_minus):
         opr = program.stream[program.current - 1][0]
@@ -303,12 +276,10 @@ def unary(program: Program):
 
     call(program)
 
-
 def call(program: Program):
     primary(program)
     while increment_if(program, parenthesis_left):
         process_call(program)  # TODO pass callee to process_call
-
 
 def primary(program: Program):
     if increment_if(program, literal_true):

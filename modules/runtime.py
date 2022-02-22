@@ -5,14 +5,14 @@ final = common.final
 Final = common.Final
 dataclass = common.dataclass
 
+runtimes: Final(dict) = {}
 
 @final
 @dataclass
 class InterpreterHost:
-    function_table: Final = {}
+    function_table: Final(dict) = {}
     stack: Final = collections.deque()
     frames: Final = collections.deque()
-
 
 @final
 @dataclass

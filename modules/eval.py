@@ -12,7 +12,6 @@ symbol_minus: int = common.symbol_minus
 
 vm: runtime.InterpreterHost
 
-
 def opr_unary(opr: int) -> None:
     if opr == declr_not:
         value = pop()
@@ -22,7 +21,6 @@ def opr_unary(opr: int) -> None:
             pass
     elif opr == symbol_minus:
         pass
-
 
 def load_primary(opr: int) -> None:
     if opr == literal_true:
@@ -35,18 +33,14 @@ def load_primary(opr: int) -> None:
         # Variables
         pass
 
-
 def push(value) -> None:
     vm.stack.append(value)
-
 
 def pop():
     return vm.stack.pop()
 
-
 def drop() -> None:
     vm.stack.pop()
-
 
 def peek(offset: int = 0):
     if offset < 0:
